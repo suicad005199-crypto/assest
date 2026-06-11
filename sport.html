@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Sports Prediction System</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: #fff;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+.card {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+input {
+    padding: 10px;
+    margin: 5px;
+    width: 200px;
+    border-radius: 6px;
+    border: none;
+}
+
+button {
+    padding: 12px 18px;
+    background: #00c853;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.result {
+    line-height: 1.8;
+}
+
+.good {
+    color: #00e676;
+}
+
+.bad {
+    color: #ff5252;
+}
+
+.neutral {
+    color: #ffd54f;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+        <h2>AI Sports Prediction System</h2>
+
+        <input id="home" placeholder="Home Team" value="Team A">
+        <input id="away" placeholder="Away Team" value="Team B">
+
+        <br><br>
+
+        <input id="odds" placeholder="Home Odds (e.g. 2.0)" value="2.0">
+
+        <br><br>
+
+        <button onclick="runAI()">Run AI Analysis</button>
+    </div>
+
+    <div class="card result" id="output"></div>
+
+</div>
+
+<script>
+
+// random helper
+function rand(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+// AI Agents simulation
+function runAI() {
+
+    const home = document.getElementById("home").value;
+    const away = document.getElementById("away").value;
+    const odds = parseFloat(document.getElementById("odds").value);
+
+    // === AI AGENT SCORES ===
+    const dataScore = rand(55, 75);       // Data Analyst
+    const tacticScore = rand(50, 75);     // Tactical
+    const modelScore = rand(55, 80);      // Statistical Model
+    const riskPenalty = rand(0, 15);      // Risk Manager penalty
+
+    // weighted probability
+    let winProb =
+        (dataScore * 0.3 +
+         tacticScore * 0.2 +
+         modelScore * 0.5) / 100;
+
+    winProb = winProb - (riskPenalty / 100);
+
+    if (winProb < 0) winProb = 0;
+    if (winProb > 1) winProb = 1;
+
+    const drawProb = Math.max(0.1, (1 - winProb) * 0.25);
+    const awayProb = 1 - winProb - drawProb;
+
+    // Expected Value
+    const ev = (winProb * odds) - 1;
+
+    // confidence
+    let confidence = "C";
+    if (winProb > 0.6) confidence = "A";
+    else if (winProb > 0.55) confidence = "B";
+
+    // recommendation
+    const recommend = ev > 0 && winProb > 0.52;
+
+    // output
+    document.getElementById("output").innerHTML = `
+        <h3>${home} vs ${away}</h3>
+        <hr>
+
+        <p>Data Analyst Score: ${dataScore.toFixed(2)}</p>
+        <p>Tactical Score: ${tacticScore.toFixed(2)}</p>
+        <p>Model Score: ${modelScore.toFixed(2)}</p>
+        <p>Risk Penalty: ${riskPenalty.toFixed(2)}</p>
+
+        <hr>
+
+        <h3 class="good">Home Win Probability: ${(winProb * 100).toFixed(2)}%</h3>
+        <p>Draw: ${(drawProb * 100).toFixed(2)}%</p>
+        <p>Away Win: ${(awayProb * 100).toFixed(2)}%</p>
+
+        <hr>
+
+        <p>Odds: ${odds}</p>
+        <p>Expected Value (EV): ${ev.toFixed(3)}</p>
+
+        <h3>Confidence: ${confidence}</h3>
+
+        <h3 class="${recommend ? 'good' : 'bad'}">
+            Recommendation: ${recommend ? "BET" : "NO BET"}
+        </h3>
+    `;
+}
+
+</script>
+
+</body>
+</html>
