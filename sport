@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 賽事預測系統</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#1e1e1e;
+    color:white;
+    padding:20px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+}
+
+.card{
+    background:#2b2b2b;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+button{
+    background:#00c853;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.8;
+}
+
+.result{
+    margin-top:20px;
+    line-height:1.8;
+}
+
+.win{
+    color:#00e676;
+}
+
+.lose{
+    color:#ff5252;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+        <h2>AI 賽事預測系統</h2>
+
+        <label>主隊：</label>
+        <input id="home" value="Lakers">
+
+        <br><br>
+
+        <label>客隊：</label>
+        <input id="away" value="Warriors">
+
+        <br><br>
+
+        <button onclick="predict()">
+            開始分析
+        </button>
+    </div>
+
+    <div class="card result" id="result">
+
+    </div>
+
+</div>
+
+<script>
+
+function random(min,max){
+    return Math.floor(Math.random()*(max-min+1))+min;
+}
+
+function predict(){
+
+    const home=document.getElementById("home").value;
+    const away=document.getElementById("away").value;
+
+    let aiData=[];
+
+    aiData.push({
+        name:"AI資料分析師",
+        score:random(50,70)
+    });
+
+    aiData.push({
+        name:"AI戰術分析師",
+        score:random(50,70)
+    });
+
+    aiData.push({
+        name:"AI數據模型",
+        score:random(50,70)
+    });
+
+    aiData.push({
+        name:"AI風險管理師",
+        score:random(50,70)
+    });
+
+    let total=0;
+
+    aiData.forEach(x=>{
+        total+=x.score;
+    });
+
+    let avg=(total/aiData.length).toFixed(1);
+
+    let confidence="C";
+
+    if(avg>=65) confidence="A";
+    else if(avg>=60) confidence="B";
+    else confidence="C";
+
+    let html=`
+        <h3>${home} VS ${away}</h3>
+        <hr>
+    `;
+
+    aiData.forEach(x=>{
+        html+=`
+        <p>
+        ${x.name}：${x.score}分
+        </p>
+        `;
+    });
+
+    html+=`
+        <hr>
+        <h2 class="win">
+            主隊勝率：${avg}%
+        </h2>
+
+        <h3>
+            信心等級：${confidence}
+        </h3>
+
+        <p>
+            建議：
+            ${avg>=60 ? "可考慮進場" : "觀望"}
+        </p>
+    `;
+
+    document.getElementById("result").innerHTML=html;
+}
+
+</script>
+
+</body>
+</html>
